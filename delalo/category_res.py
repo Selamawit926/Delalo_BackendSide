@@ -4,7 +4,7 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from delalo import db
 from delalo.models import UserModel
-from delalo.shemas import 
+
 
 
 class Users(Resource):
