@@ -1,10 +1,5 @@
-from operator import mod
-from os import name
 import re
-from typing_extensions import Required
-from flask_sqlalchemy import model
 from marshmallow import fields, validates, ValidationError
-from sqlalchemy.orm import defaultload
 from delalo import ma
 from delalo.models import *
 
@@ -85,11 +80,12 @@ class ReviewSchema(ma.Schema):
 
 class OrderSchema(ma.Schema):
     class Meta:
-        fields = ("id", "status", "is_completed", "order_created_date", "order_completed_date", "start_time", "saved_time", "unique_code", "seeker_id", "provider_id")
+        fields = ("id", "status", "progress", "is_completed", "order_created_date", "order_completed_date", "start_time", "saved_time", "unique_code", "seeker_id", "provider_id")
         model = OrderModel
         ordered = True
 
     status = fields.String(required=True)
+    progress = fields.String(required=False)
     is_completed = fields.Boolean(required=True)
     order_created_date = fields.String(required=True)
     order_completed_date = fields.String(required=False)

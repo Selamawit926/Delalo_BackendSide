@@ -56,6 +56,7 @@ class OrderModel(db.Model):
     __tablename__ = "order"
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(70), nullable=False)
+    progress = db.Column(db.String(10), nullable=True)
     is_completed = db.Column(db.Boolean)
     order_created_date = db.Column(db.String(30))
     order_completed_date = db.Column(db.String(30))
