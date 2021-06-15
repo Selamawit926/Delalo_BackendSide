@@ -4,6 +4,7 @@ from marshmallow import ValidationError
 from delalo import db
 from delalo.models import UserModel
 from delalo.shemas import UserSchema
+from flask_jwt_extended import ( create_access_token, get_jwt, jwt_required, get_jwt_identity)
 
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
@@ -13,12 +14,13 @@ class Users(Resource):
     def post(self):
         data = request.get_json()
         try:
-            args = user_schema.load(data)
+            args = UserSchema(partial=True).load(data)
         except ValidationError as errors:
             abort(400, message=errors.messages)
         user = UserModel(firstname=args['firstname'], 
-                         lastname=args['lastname'], 
-                         password=args['password'], 
+                         lastname=args['lastname'],
+                         email = args["email"],
+                         password=args['password_hash'], 
                          role='user', 
                          phone=args['phone'],
                          image=args['image'],
@@ -26,7 +28,8 @@ class Users(Resource):
         db.session.add(user)
         db.session.commit()
         return user_schema.dump(user), 201
-
+    
+    @jwt_required()
     def get(self):
         result = UserModel.query.all()
         return user_schemas.dump(result)   
@@ -34,7 +37,7 @@ class Users(Resource):
 
 
 class User(Resource):
-    # @jwt_required()
+    @jwt_required()
     def get(self, id):
         result = UserModel.query.filter_by(id=id).first()
         if not result:

@@ -1,33 +1,37 @@
+from operator import mod
+from os import name
 import re
+from typing_extensions import Required
+from flask_sqlalchemy import model
 from marshmallow import fields, validates, ValidationError
+from sqlalchemy.orm import defaultload
 from delalo import ma
-from delalo import models
 from delalo.models import *
 
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ("id", "firstname", "lastname", "email", "password", "role", "phone", "image", "address")
+        fields = ("id", "firstname", "lastname", "email", "password_hash", "role", "phone", "image", "address")
         model = UserModel
         ordered = True
     
     firstname = fields.String(required=True)
     lastname = fields.String(required=True)
     email = fields.String(required=True)
-    # password_hashed = fields.String(load_only=True, data_key="password")
-    # role = fields.String(required=True)
+    password_hash = fields.String(load_only=True)
+    role = fields.String(required=False)
     phone = fields.String(required=True)
     image = fields.String(required=False)
     address = fields.String(required=True)
 
 
-    @validates("phone")
-    def validate_mobile(self, value):
-        rule_phone = re.compile(r'^\+(?:[0-9]●?){6,14}[0-9]$')
+    # @validates("phone")
+    # def validate_mobile(self, value):
+    #     rule_phone = re.compile(r'^\+(?:[0-9]●?){6,14}[0-9]$')
 
-        if not rule_phone.search(value):
-            msg = u"Invalid mobile number."
-            raise ValidationError(msg)
+    #     if not rule_phone.search(value):
+    #         msg = u"Invalid mobile number."
+    #         raise ValidationError(msg)
 
     @validates("email")
     def validate_email(self, email):
@@ -43,12 +47,54 @@ class UserSchema(ma.Schema):
                 'please use a different email.'.format(email=email)
             )
 
+class ProviderSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "description", "category", "jobs_done", "per_hour_wage", "recommendation", "average_rating", "user_id")
+        model = ProviderModel
+        ordered = True
 
+    description = fields.String(required=True)
+    category = fields.String(required=True)
+    jobs_done = fields.String(required=True)  
+    per_hour_wage = fields.Integer(required=True)
+    recommendation = fields.String(required=True)
+    average_rating = fields.String(required=True)
+    user_id = fields.Integer(required=True)
 
 class CategorySchema(ma.Schema):
     class Meta:
         fields = ("id", "name", "num_of_providers", "description")
         model = CategoryModel
         ordered = True
-        
-                    
+
+    name = fields.String(required=True)  
+    num_of_providers = fields.Integer(required=True)
+    description = fields.String(required=True)
+
+
+class ReviewSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "rating", "comment", "order_id")                    
+        model = OrderModel
+        ordered = True
+
+    rating = fields.Integer(required=True)
+    comment = fields.String(required=True)
+    order_id = fields.Integer(required=True)
+
+
+class OrderSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "status", "is_completed", "order_created_date", "order_completed_date", "start_time", "saved_time", "unique_code", "seeker_id", "provider_id")
+        model = OrderModel
+        ordered = True
+
+    status = fields.String(required=True)
+    is_completed = fields.Boolean(required=True)
+    order_created_date = fields.String(required=True)
+    order_completed_date = fields.String(required=False)
+    start_time = fields.DateTime(required=True)
+    saved_time = fields.Float(required=True)
+    unique_code = fields.Float(required=True)
+    seeker_id = fields.Integer(required=True)
+    provider_id = fields.Integer(required=True)
