@@ -55,7 +55,7 @@ class ProviderSchema(ma.Schema):
     jobs_done = fields.Integer(required=True)  
     per_hour_wage = fields.Integer(required=True)
     recommendation = fields.String(required=True)
-    average_rating = fields.Float(required=True)
+    average_rating = fields.Float(required=False)
     user_id = fields.Integer(required=True)
 
 class CategorySchema(ma.Schema):

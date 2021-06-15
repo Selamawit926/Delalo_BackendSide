@@ -6,6 +6,7 @@ from marshmallow.fields import Email
 from delalo import db
 from delalo.models import UserModel
 from delalo.shemas import *
+from delalo.common.util import cleanNullTerms
 from flask_jwt_extended import ( create_access_token, get_jwt,
                             jwt_required, get_jwt_identity)
 
@@ -53,7 +54,6 @@ class Providers(Resource):
 
 
 class Provider(Resource):
-    # @jwt_required()
     def get(self, id):
         prov = ProviderModel.query.filter_by(id=id).first()
         prov_user = UserModel.query.filter_by(id=prov.user_id).first()
@@ -67,15 +67,36 @@ class Provider(Resource):
         return {"user_info" : prov_user_dump,
                 "prov_info" : prov_dump}
 
-    # @jwt_required()
-    # def patch(self, id):
-    #     data = request.get_json()
-    #     try:
-    #         args = UserSchema(partial=True).load(data)
-    #     except ValidationError as errors:
-    #         abort(400, message=errors.messages)
-    #     # args = cleanNullTerms(args)
-    #     user_id = get_jwt_identity()
-    #     if user_id == id:
-    #         existing = UserModel.query.filter_by(id=id).update(args)
-    #     return abort(403, message="User not authorized!")
+    
+    def patch(self, id):
+        data = request.get_json()
+        try:
+            args = ProviderSchema(partial=True).load(data)
+        except ValidationError as errors:
+            abort(400, message=errors.messages)
+        args = cleanNullTerms(args)
+        
+        
+        provider = ProviderModel.query.filter_by(id=id).first()
+        if provider:
+            provider.jobs_done += 1
+            db.session.commit() 
+            # if bool(args['average_rating']):
+            try:
+                rating = args['average_rating']
+                prov_review_count = OrderModel.query.filter_by(provider_id=provider.id).count()
+                prov_review_count = float(prov_review_count)
+                old_average_rating = provider.average_rating
+                old_average_rating = float(old_average_rating)
+                sum = old_average_rating * prov_review_count
+                sum+=rating
+                new_average_rating = sum/(prov_review_count + 1)
+                provider.average_rating = new_average_rating
+                db.session.commit()
+            except:
+                abort(400, message="New Rating missing")
+            provider = ProviderModel.query.filter_by(id=id).first()
+            if provider:
+                return provider_schema.dump(provider)
+
+        abort(404, message="provider not found!")    
