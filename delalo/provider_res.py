@@ -10,6 +10,8 @@ from flask_jwt_extended import ( create_access_token, get_jwt,
                             jwt_required, get_jwt_identity)
 
 provider_user_schema = ProviderUserSchema()
+provider_schema = ProviderSchema()
+user_schema = UserSchema()
 provider_users_schema = ProviderUserSchema(many=True)
 
 
@@ -40,21 +42,30 @@ class Providers(Resource):
         db.session.commit()
         return provider_user_schema.dump(data)
 
-    def get(self):
-        result = ProviderModel.query.all()
-        for item in result:
-            item = {""}
-        return UserSchema(many=True).dump(result)   
+    # def get(self):
+    #     prov = ProviderModel.query.all()
+    #     prov_user = UserModel.query.all()
+
+    #     for item
+
+    #     return  
 
 
 
 class Provider(Resource):
     # @jwt_required()
     def get(self, id):
-        result = ProviderModel.query.filter_by(id=id).first()
-        if not result:
-            abort(404, message="User not found!")
-        return UserSchema().dump(result)
+        prov = ProviderModel.query.filter_by(id=id).first()
+        prov_user = UserModel.query.filter_by(id=prov.user_id).first()
+        if not prov_user:
+            abort(404, message="Provider not found!")
+
+        prov_dump = provider_schema.dump(prov)
+        prov_user_dump = user_schema.dump(prov_user)
+
+        
+        return {"user_info" : prov_user_dump,
+                "prov_info" : prov_dump}
 
     # @jwt_required()
     # def patch(self, id):

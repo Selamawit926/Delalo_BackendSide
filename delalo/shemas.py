@@ -104,7 +104,7 @@ class ProviderUserSchema(ma.Schema):
     class Meta:
         fields = ("id", "firstname", "lastname", "email", "password_hash", "role", "phone", "image", "address","Provider_id", "description", "category", "jobs_done", "per_hour_wage", "recommendation", "average_rating")    
         ordered = True
-
+    id = fields.Integer(dump_only=True)
     firstname = fields.String(required=True)
     lastname = fields.String(required=True)
     email = fields.String(required=True)
