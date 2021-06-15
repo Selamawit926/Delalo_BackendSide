@@ -1,5 +1,5 @@
 
-from flask import request
+from flask import jsonify, request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from marshmallow.fields import Email
@@ -43,16 +43,37 @@ class Providers(Resource):
         db.session.commit()
         return provider_user_schema.dump(data)
 
-    # def get(self):
-    #     prov = ProviderModel.query.all()
-    #     prov_user = UserModel.query.all()
+    def get(self):
+        prov = ProviderModel.query.all()
 
-    #     for item
+        lst = []
+        for item in prov:
+            user = UserModel.query.filter_by(id=item.user_id).first()
+            diction = {
+                "id" : user.id,
+                "firstname" : user.firstname,
+                "lastname" : user.lastname,
+                "email" : user.email,
+                "role" : user.role,
+                "phone" : user.phone,
+                "image" : user.image,
+                "address" : user.address,
+                "provider_id" : item.id,
+                "description" : item.description,
+                "category" : item.category,
+                "jobs_done" : item.jobs_done,
+                "per_hour_wage" : item.per_hour_wage,
+                "recommendation" : item.recommendation,
+                "average_rating" : float(item.average_rating)
+            }
 
-    #     return  
+            lst.append(diction)
 
+        if list:
+            return jsonify(results=lst)
+        abort(404, message="No providers in the database")    
 
-
+        
 class Provider(Resource):
     def get(self, id):
         prov = ProviderModel.query.filter_by(id=id).first()
