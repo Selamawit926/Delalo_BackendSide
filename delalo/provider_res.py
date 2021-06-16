@@ -2,7 +2,6 @@
 from flask import jsonify, request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
-from marshmallow.fields import Email
 from delalo import db
 from delalo.models import UserModel
 from delalo.shemas import *
@@ -44,7 +43,7 @@ class Providers(Resource):
         return provider_user_schema.dump(data)
 
     def get(self):
-        provs = ProviderModel.query.all()
+        provs = ProviderModel.query.all()           
 
         lst = []
         for item in provs:
@@ -69,7 +68,34 @@ class Providers(Resource):
 
             lst.append(diction)
 
-        if list:
+        firstname = request.args.get('firstname') 
+        lastname = request.args.get('lastname')
+        per_hour = request.args.get('PHW')
+        location = request.args.get('address')
+
+        if per_hour:
+            per_hour = int(per_hour)
+            lst = (d for d in lst if d['per_hour_wage'] == per_hour)
+            lst=list(lst)
+
+        if lastname:
+            lastname = lastname.lower()
+            lst = (d for d in lst if lastname in d['lastname'].lower())
+            lst=list(lst)
+
+        if firstname:
+            firstname = firstname.lower()
+            lst = (d for d in lst if firstname in d['firstname'].lower())
+            lst=list(lst)
+
+        if location:  
+            location = location.lower()
+            lst = (d for d in lst if location in d['address'].lower())
+            lst=list(lst)   
+
+
+
+        if lst:
             return jsonify(results=lst)
         abort(404, message="No providers in the database") 
 
@@ -165,22 +191,22 @@ class Provider(Resource):
 
         abort(404, message="provider not found!")    
 
-    def delete(self, id):
-        prov = ProviderModel.query.filter_by(id=id).first()
-        prov_user = UserModel.query.filter_by(id=prov.user_id).first()
+    # def delete(self, id):
+    #     prov = ProviderModel.query.filter_by(id=id).first()
+    #     prov_user = UserModel.query.filter_by(id=prov.user_id).first()
 
-        if prov and prov_user:
-            ProviderModel.query.filter_by(id=id).delete()
-            UserModel.query.filter_by(id=prov.user_id).delete()
-            db.session.commit()
+    #     if prov and prov_user:
+    #         ProviderModel.query.filter_by(id=id).delete()
+    #         UserModel.query.filter_by(id=prov.user_id).delete()
+    #         db.session.commit()
             
 
-            prov_dump = provider_schema.dump(prov)
-            prov_user_dump = user_schema.dump(prov_user)
-            return {"user_info" : prov_user_dump,
-                    "prov_info" : prov_dump}
+    #         prov_dump = provider_schema.dump(prov)
+    #         prov_user_dump = user_schema.dump(prov_user)
+    #         return {"user_info" : prov_user_dump,
+    #                 "prov_info" : prov_dump}
 
-        abort(404, f"No provider with id: {id}")            
+    #     abort(404, f"No provider with id: {id}")            
 
 
 class TopProviders(Resource):
@@ -210,7 +236,7 @@ class TopProviders(Resource):
 
             lst.append(diction)
 
-        if list:
+        if lst:
             return jsonify(results=lst)
         abort(404, message="No providers in the database") 
 
@@ -243,6 +269,6 @@ class TopCategoryProviders(Resource):
 
             lst.append(diction)
 
-        if list:
+        if lst:
             return jsonify(results=lst)
         abort(404, message="No providers in the database")     
