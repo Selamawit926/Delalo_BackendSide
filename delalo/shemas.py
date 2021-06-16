@@ -1,6 +1,8 @@
 import re
 from marshmallow import fields, validates, ValidationError
+from sqlalchemy.orm import load_only
 from delalo import ma
+from delalo import models
 from delalo.models import *
 
 
@@ -50,19 +52,20 @@ class ProviderSchema(ma.Schema):
 
     description = fields.String(required=True)
     category = fields.String(required=True)
-    jobs_done = fields.String(required=True)  
+    jobs_done = fields.Integer(required=True)  
     per_hour_wage = fields.Integer(required=True)
     recommendation = fields.String(required=True)
-    average_rating = fields.String(required=True)
+    average_rating = fields.Float(required=False)
     user_id = fields.Integer(required=True)
 
 class CategorySchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "num_of_providers", "description")
+        fields = ("id", "name", "image","num_of_providers", "description")
         model = CategoryModel
         ordered = True
 
-    name = fields.String(required=True)  
+    name = fields.String(required=True) 
+    image = fields.String(required=False) 
     num_of_providers = fields.Integer(required=True)
     description = fields.String(required=True)
 

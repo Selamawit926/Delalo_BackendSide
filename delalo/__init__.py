@@ -20,18 +20,33 @@ bcrypt = Bcrypt(app)
 cors = CORS(app)
 
 
-from delalo.user_res import User,Users
-from delalo.order_res import Orders,Order,OrderStatus,Jobs,DeleteOrder
-from delalo.review_res import Reviews,Review
+from delalo.user_res import *
+from delalo.order_res import *
+from delalo.review_res import *
+from delalo.provider_res import *
+from delalo.category_res import *
+
+
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
+
 api.add_resource(Orders, '/orders')
 api.add_resource(Order,'/orders/<int:id>')
 api.add_resource(OrderStatus,'/orderstatus/<int:id>')
 api.add_resource(DeleteOrder,'/deleteorder/<int:id>')
 api.add_resource(Jobs, '/jobs/<int:id>')
+
 api.add_resource(Reviews, '/reviews')
 api.add_resource(Review, '/reviews/<int:id>')
+
+api.add_resource(Categories, '/categories')
+api.add_resource(Category, '/categories/<int:id>') 
+
+api.add_resource(Providers, '/providers')
+api.add_resource(Provider, '/providers/<int:id>')
+api.add_resource(ProvidersCategory, '/providers/category/<int:category_id>')
+api.add_resource(TopProviders, '/providers/top')
+api.add_resource(TopCategoryProviders, '/providers/top/<int:category_id>')
 
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
