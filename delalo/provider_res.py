@@ -43,41 +43,41 @@ class Providers(Resource):
         db.session.commit()
         return provider_user_schema.dump(data)
 
-    # def get(self):
-    #     provs = ProviderModel.query.all()
+    def get(self):
+        provs = ProviderModel.query.all()
 
-    #     lst = []
-    #     for item in provs:
-    #         user = UserModel.query.filter_by(id=item.user_id).first()
-    #         diction = {
-    #             "id" : user.id,
-    #             "firstname" : user.firstname,
-    #             "lastname" : user.lastname,
-    #             "email" : user.email,
-    #             "role" : user.role,
-    #             "phone" : user.phone,
-    #             "image" : user.image,
-    #             "address" : user.address,
-    #             "provider_id" : item.id,
-    #             "description" : item.description,
-    #             "category" : item.category,
-    #             "jobs_done" : item.jobs_done,
-    #             "per_hour_wage" : item.per_hour_wage,
-    #             "recommendation" : item.recommendation,
-    #             "average_rating" : float(item.average_rating)
-    #         }
+        lst = []
+        for item in provs:
+            user = UserModel.query.filter_by(id=item.user_id).first()
+            diction = {
+                "id" : user.id,
+                "firstname" : user.firstname,
+                "lastname" : user.lastname,
+                "email" : user.email,
+                "role" : user.role,
+                "phone" : user.phone,
+                "image" : user.image,
+                "address" : user.address,
+                "provider_id" : item.id,
+                "description" : item.description,
+                "category" : item.category,
+                "jobs_done" : item.jobs_done,
+                "per_hour_wage" : item.per_hour_wage,
+                "recommendation" : item.recommendation,
+                "average_rating" : float(item.average_rating)
+            }
 
-    #         lst.append(diction)
+            lst.append(diction)
 
-    #     if list:
-    #         return jsonify(results=lst)
-    #     abort(404, message="No providers in the database") 
+        if list:
+            return jsonify(results=lst)
+        abort(404, message="No providers in the database") 
 
-
+class ProvidersCategory(Resource):
     def get(self, category_id):
         name = CategoryModel.query.filter_by(id=category_id).first().name
         # capitalize
-        provs = ProviderModel.query.filter_by(category=name).all()
+        provs = ProviderModel.query.filter_by(category.capitalize=name.capitalize).all()
 
         lst = []
         for item in provs:

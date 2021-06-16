@@ -28,6 +28,7 @@ api.add_resource(User, '/users/<int:id>')
 
 api.add_resource(Providers, '/providers')
 api.add_resource(Provider, '/providers/<int:id>')
+api.add_resource(ProvidersCategory, 'providers/category/<int:category_id>')
 api.add_resource(TopProviders, '/providers/top')
 api.add_resource(TopCategoryProviders, '/providers/top/<int:category_id>')
 
