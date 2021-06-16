@@ -159,7 +159,7 @@ class Provider(Resource):
 
 class TopProviders(Resource):
     def get(self):
-        provs = ProviderModel.query.order_by(ProviderModel.average_rating.desc()).limit(6).all()
+        provs = ProviderModel.query.order_by(ProviderModel.average_rating.desc()).limit(3).all()
 
         lst = []
         for item in provs:
@@ -192,7 +192,7 @@ class TopCategoryProviders(Resource):
     def get(self, category_id):
         name = CategoryModel.query.filter_by(id=category_id).first().name
         # capitalize
-        provs = ProviderModel.query.filter_by(category=name).order_by(ProviderModel.average_rating.desc()).limit(3).all()
+        provs = ProviderModel.query.filter_by(category=name).order_by(ProviderModel.average_rating.desc()).limit(6).all()
 
         lst = []
         for item in provs:
