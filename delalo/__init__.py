@@ -24,6 +24,9 @@ cors = CORS(app)
 from delalo.user_res import User,Users
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
+from delalo.category_res import Category,Categories
+api.add_resource(Categories, '/categories')
+api.add_resource(Category, '/categories/<int:id>') 
 
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
