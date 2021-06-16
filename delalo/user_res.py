@@ -36,6 +36,9 @@ class Users(Resource):
     
     @jwt_required()
     def get(self):
+        logged_user_role = get_jwt_identity()['role']
+        if logged_user_role != 'admin':
+            abort(400, message="This requires admin privilige")
         result = UserModel.query.all()
         return user_schemas.dump(result)   
 

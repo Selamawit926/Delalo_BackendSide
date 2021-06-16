@@ -6,8 +6,7 @@ from delalo import db
 from delalo.models import UserModel
 from delalo.shemas import *
 from delalo.common.util import cleanNullTerms
-from flask_jwt_extended import ( create_access_token, get_jwt,
-                            jwt_required, get_jwt_identity)
+from flask_jwt_extended import ( create_access_token, get_jwt, jwt_required, get_jwt_identity)
 
 provider_user_schema = ProviderUserSchema()
 provider_schema = ProviderSchema()
@@ -195,24 +194,7 @@ class Provider(Resource):
             if provider:
                 return provider_schema.dump(provider)
 
-        abort(404, message="provider not found!")    
-
-    # def delete(self, id):
-    #     prov = ProviderModel.query.filter_by(id=id).first()
-    #     prov_user = UserModel.query.filter_by(id=prov.user_id).first()
-
-    #     if prov and prov_user:
-    #         ProviderModel.query.filter_by(id=id).delete()
-    #         UserModel.query.filter_by(id=prov.user_id).delete()
-    #         db.session.commit()
-            
-
-    #         prov_dump = provider_schema.dump(prov)
-    #         prov_user_dump = user_schema.dump(prov_user)
-    #         return {"user_info" : prov_user_dump,
-    #                 "prov_info" : prov_dump}
-
-    #     abort(404, f"No provider with id: {id}")            
+        abort(404, message="provider not found!")              
 
 
 class TopProviders(Resource):

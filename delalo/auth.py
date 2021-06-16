@@ -11,29 +11,30 @@ user_schema = UserSchema()
 class UserLogin(Resource):
     def post(self):
         data = request.get_json()
-        current_user = UserModel.query.filter_by(email=data['email'])
+        current_user = UserModel.query.filter_by(email=data['email']).first()
 
         if not current_user:
             return {'message': 'User with email {} doesn\'t exist'.format(data['email'])}
         
         if current_user.check_password(data['password']):
-            access_token = create_access_token(identity = data['email'])
+            access_token = create_access_token(identity = {'role': current_user.role, 'email': data['email']})
             return {
                 'user': user_schema.dump(current_user),
-                'message': 'Logged in as {}'.format(current_user.username),
+                'message': f'Logged in as {current_user.firstname} {current_user.lastname}',
                 'access_token': access_token
                 }
         else:
             return {'message': 'Wrong credentials'}
 
 class UserLogout(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         jti = get_jwt()['jti']
+        print(jti)
         try:
             revoked_token = RevokedTokenModel(jti = jti)
             db.session.add(revoked_token)
             db.session.commit()
-            return {'message': 'User logout successfull'}, 200
+            return {'message': 'User logout successfull'}
         except:
-            return {'message': 'Something went wrong'}, 500
+            return {"message": "Something went wrong"}
