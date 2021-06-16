@@ -1,5 +1,4 @@
 
-from re import X
 from flask import jsonify, request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
@@ -166,9 +165,22 @@ class Provider(Resource):
 
         abort(404, message="provider not found!")    
 
-    # def delete(self):
+    def delete(self, id):
+        prov = ProviderModel.query.filter_by(id=id).first()
+        prov_user = UserModel.query.filter_by(id=prov.user_id).first()
 
+        if prov and prov_user:
+            ProviderModel.query.filter_by(id=id).delete()
+            UserModel.query.filter_by(id=prov.user_id).delete()
+            db.session.commit()
+            
 
+            prov_dump = provider_schema.dump(prov)
+            prov_user_dump = user_schema.dump(prov_user)
+            return {"user_info" : prov_user_dump,
+                    "prov_info" : prov_dump}
+
+        abort(404, f"No provider with id: {id}")            
 
 
 class TopProviders(Resource):
