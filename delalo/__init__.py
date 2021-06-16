@@ -20,11 +20,13 @@ bcrypt = Bcrypt(app)
 cors = CORS(app)
 
 
-
 from delalo.user_res import User,Users
+from delalo.order_res import Orders,Order,OrderStatus
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
-
+api.add_resource(Orders, '/orders')
+api.add_resource(Order,'/orders/<int:id>')
+api.add_resource(OrderStatus,'/orderstatus/<int:id>')
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
    

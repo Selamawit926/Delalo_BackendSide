@@ -167,17 +167,43 @@ import datetime
 #                         description="Great tutor")
 
 
-# order1 = OrderModel(
-#     status = "pending",
-#     is_completed = False,
-#     order_created_date = "05-05-2021",
-#     order_completed_date = "05-05-2021",
-#     start_time = datetime.datetime.now(),
-#     saved_time = 1.6,
-#     unique_code = 4040,
-#     seeker_id = 7,
-#     provider_id = 4
-# )                        
+order1 = OrderModel(
+    status = "pending",
+    is_completed = False,
+    order_created_date = "05-05-2021",
+    order_completed_date = "05-05-2021",
+    start_time = datetime.datetime.now(),
+    saved_time = 1.6,
+    unique_code = 4040,
+    seeker_id = 7,
+    provider_id = 4
+)                        
+
+
+order2 = OrderModel(
+    status = "pending",
+    is_completed = False,
+    order_created_date = "05-05-2021",
+    order_completed_date = "05-05-2021",
+    start_time = datetime.datetime.now(),
+    saved_time = 1.6,
+    unique_code = 4040,
+    seeker_id = 7,
+    provider_id = 3
+) 
+
+
+order3 = OrderModel(
+    status = "pending",
+    is_completed = False,
+    order_created_date = "05-05-2021",
+    order_completed_date = "05-05-2021",
+    start_time = datetime.datetime.now(),
+    saved_time = 1.6,
+    unique_code = 4040,
+    seeker_id = 2,
+    provider_id = 4
+) 
 
 # review1 = ReviewModel(
 #     rating = 4,
@@ -202,6 +228,8 @@ import datetime
 # db.session.add(category5)
 # db.session.add(category6)
 # db.session.add(order1)
+# db.session.add(order2)
+# db.session.add(order3)
 # db.session.add(review1)
 
 # db.session.commit()
