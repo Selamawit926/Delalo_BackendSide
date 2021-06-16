@@ -21,12 +21,19 @@ cors = CORS(app)
 
 
 
-from delalo.user_res import User,Users
+from delalo.user_res import *
+from delalo.provider_res import *
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
 from delalo.category_res import Category,Categories
 api.add_resource(Categories, '/categories')
 api.add_resource(Category, '/categories/<int:id>') 
+
+api.add_resource(Providers, '/providers')
+api.add_resource(Provider, '/providers/<int:id>')
+api.add_resource(ProvidersCategory, 'providers/category/<int:category_id>')
+api.add_resource(TopProviders, '/providers/top')
+api.add_resource(TopCategoryProviders, '/providers/top/<int:category_id>')
 
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
