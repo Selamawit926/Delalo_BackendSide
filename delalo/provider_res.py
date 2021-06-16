@@ -1,4 +1,5 @@
 
+from re import X
 from flask import jsonify, request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
@@ -75,12 +76,23 @@ class Providers(Resource):
 
 class ProvidersCategory(Resource):
     def get(self, category_id):
-        name = CategoryModel.query.filter_by(id=category_id).first().name
-        # capitalize
-        provs = ProviderModel.query.filter_by(category.capitalize=name.capitalize).all()
+        name = CategoryModel.query.filter_by(id=category_id).first()
+        if not name:
+            abort(404, message=f"No category having the category id:{category_id}")
+        name = name.name
+        name = name.lower()
+
+        provs = ProviderModel.query.all()
+        provs_list =[]
+        for item in provs:
+            if item.category.lower() == name:
+                provs_list.append(item)
+        
+        if not provs_list:
+            abort(404, message=f"No providers in the database with category id:{category_id}")  
 
         lst = []
-        for item in provs:
+        for item in provs_list:
             user = UserModel.query.filter_by(id=item.user_id).first()
             diction = {
                 "id" : user.id,
@@ -102,7 +114,7 @@ class ProvidersCategory(Resource):
 
             lst.append(diction)
 
-        if list:
+        if lst:
             return jsonify(results=lst)
         abort(404, message=f"No providers in the database with category id:{category_id}")          
 
@@ -153,6 +165,8 @@ class Provider(Resource):
                 return provider_schema.dump(provider)
 
         abort(404, message="provider not found!")    
+
+    # def delete(self):
 
 
 
