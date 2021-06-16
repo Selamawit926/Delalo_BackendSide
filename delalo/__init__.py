@@ -25,6 +25,9 @@ from delalo.user_res import *
 from delalo.provider_res import *
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
+from delalo.category_res import Category,Categories
+api.add_resource(Categories, '/categories')
+api.add_resource(Category, '/categories/<int:id>') 
 
 api.add_resource(Providers, '/providers')
 api.add_resource(Provider, '/providers/<int:id>')

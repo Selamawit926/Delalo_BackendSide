@@ -142,27 +142,34 @@ import datetime
                  
 
 # category1= CategoryModel(name="Delivery",
+#                         image = "./img/56.jpg",
 #                         num_of_providers=0,
+                       
 #                         description="Fast delivery")
 
 # category2= CategoryModel(name="Cleaning",
 #                         num_of_providers=0,
+#                         image = "./img/56.jpg",
 #                         description="Fast cleaning")
                         
 # category3= CategoryModel(name="Electrician",
+#                         image = "./img/56.jpg",
 #                         num_of_providers=0,
 #                         description="Fast electricity")
 
 
 # category4= CategoryModel(name="Construction",
+#                         image = "./img/56.jpg",
 #                         num_of_providers=0,
 #                         description="Fast construction")
 
 # category5= CategoryModel(name="Mechanic",
+#                         image = "./img/56.jpg",
 #                         num_of_providers=0,
 #                         description="Mechanic work")
                         
 # category6= CategoryModel(name="Tutor",
+#                         image = "./img/56.jpg",
 #                         num_of_providers=0,
 #                         description="Great tutor")
 
@@ -204,5 +211,5 @@ import datetime
 # db.session.add(order1)
 # db.session.add(review1)
 
-# db.session.commit()
+db.session.commit()
 

@@ -60,11 +60,12 @@ class ProviderSchema(ma.Schema):
 
 class CategorySchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "num_of_providers", "description")
+        fields = ("id", "name", "image","num_of_providers", "description")
         model = CategoryModel
         ordered = True
 
-    name = fields.String(required=True)  
+    name = fields.String(required=True) 
+    image = fields.String(required=False) 
     num_of_providers = fields.Integer(required=True)
     description = fields.String(required=True)
 

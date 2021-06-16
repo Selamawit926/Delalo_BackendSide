@@ -92,6 +92,8 @@ class CategoryModel(db.Model):
     __tablename__ = "category"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), nullable=False)
+    image = db.Column(db.String(80), nullable=True)
+
     num_of_providers = db.Column(db.Integer, nullable=False)
     description = db.Column(db.Text, nullable=True)
 
