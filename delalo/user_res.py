@@ -2,13 +2,13 @@ from flask import request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from delalo import db
-from delalo.models import UserModel
-from delalo.shemas import UserSchema
+from delalo.models import *
+from delalo.shemas import *
 from flask_jwt_extended import ( create_access_token, get_jwt, jwt_required, get_jwt_identity)
 
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
-
+provider_schema = ProviderSchema()
 
 class Users(Resource):
     def post(self):
@@ -47,8 +47,17 @@ class Users(Resource):
 class User(Resource):
     # @jwt_required()
     def get(self, id):
-        result = UserModel.query.filter_by(id=id).first()
-        if not result:
+        user = UserModel.query.filter_by(id=id).first()
+        if not user:
             abort(404, message="User not found!")
-        return UserSchema().dump(result)
+
+        prov_user = ProviderModel.query.filter_by(user_id=user.id).first()
+
+        user_dump = user_schema.dump(user)
+        prov_user_dump = provider_schema.dump(prov_user)
+
+        
+        return {"user_info" : user_dump,
+                "prov_info" : prov_user_dump}
+
 

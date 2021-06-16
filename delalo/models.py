@@ -59,7 +59,7 @@ class OrderModel(db.Model):
     start_time = db.Column(db.DateTime)
     saved_time = db.Column(db.Numeric)
     unique_code = db.Column(db.Integer)
-
+    final_payment= db.Column(db.Float)
     seeker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     provider_id = db.Column(db.Integer, db.ForeignKey('provider.id'), nullable=False)
 

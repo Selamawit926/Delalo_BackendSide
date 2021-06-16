@@ -97,8 +97,7 @@ class OrderSchema(ma.Schema):
     unique_code = fields.Float(required=True)
     seeker_id = fields.Integer(required=True)
     provider_id = fields.Integer(required=True)
-
-
+    final_payment=fields.Float(required=False)
 
 
 class ProviderUserSchema(ma.Schema):

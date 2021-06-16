@@ -23,13 +23,23 @@ cors = CORS()
 cors.init_app(app, allow_headers='*')
 
 
-
 from delalo.user_res import *
+from delalo.order_res import *
+from delalo.review_res import *
 from delalo.provider_res import *
 from delalo.auth import *
 from delalo.category_res import *
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
+
+api.add_resource(Orders, '/orders')
+api.add_resource(Order,'/userorders/<int:id>')
+api.add_resource(OrderStatus,'/orders/<int:id>')
+api.add_resource(DeleteOrder,'/orders/<int:id>')
+api.add_resource(Jobs, '/jobs/<int:id>')
+
+api.add_resource(Reviews, '/reviews')
+api.add_resource(Review, '/reviews/<int:id>')
 
 api.add_resource(Categories, '/categories')
 api.add_resource(Category, '/categories/<int:id>') 
