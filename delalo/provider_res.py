@@ -43,11 +43,44 @@ class Providers(Resource):
         db.session.commit()
         return provider_user_schema.dump(data)
 
-    def get(self):
-        prov = ProviderModel.query.all()
+    # def get(self):
+    #     provs = ProviderModel.query.all()
+
+    #     lst = []
+    #     for item in provs:
+    #         user = UserModel.query.filter_by(id=item.user_id).first()
+    #         diction = {
+    #             "id" : user.id,
+    #             "firstname" : user.firstname,
+    #             "lastname" : user.lastname,
+    #             "email" : user.email,
+    #             "role" : user.role,
+    #             "phone" : user.phone,
+    #             "image" : user.image,
+    #             "address" : user.address,
+    #             "provider_id" : item.id,
+    #             "description" : item.description,
+    #             "category" : item.category,
+    #             "jobs_done" : item.jobs_done,
+    #             "per_hour_wage" : item.per_hour_wage,
+    #             "recommendation" : item.recommendation,
+    #             "average_rating" : float(item.average_rating)
+    #         }
+
+    #         lst.append(diction)
+
+    #     if list:
+    #         return jsonify(results=lst)
+    #     abort(404, message="No providers in the database") 
+
+
+    def get(self, category_id):
+        name = CategoryModel.query.filter_by(id=category_id).first().name
+        # capitalize
+        provs = ProviderModel.query.filter_by(category=name).all()
 
         lst = []
-        for item in prov:
+        for item in provs:
             user = UserModel.query.filter_by(id=item.user_id).first()
             diction = {
                 "id" : user.id,
@@ -71,7 +104,7 @@ class Providers(Resource):
 
         if list:
             return jsonify(results=lst)
-        abort(404, message="No providers in the database")    
+        abort(404, message=f"No providers in the database with category id:{category_id}")          
 
         
 class Provider(Resource):
@@ -88,7 +121,6 @@ class Provider(Resource):
         return {"user_info" : prov_user_dump,
                 "prov_info" : prov_dump}
 
-    
     def patch(self, id):
         data = request.get_json()
         try:
@@ -121,3 +153,70 @@ class Provider(Resource):
                 return provider_schema.dump(provider)
 
         abort(404, message="provider not found!")    
+
+
+
+
+class TopProviders(Resource):
+    def get(self):
+        provs = ProviderModel.query.order_by(ProviderModel.average_rating.desc()).limit(6).all()
+
+        lst = []
+        for item in provs:
+            user = UserModel.query.filter_by(id=item.user_id).first()
+            diction = {
+                "id" : user.id,
+                "firstname" : user.firstname,
+                "lastname" : user.lastname,
+                "email" : user.email,
+                "role" : user.role,
+                "phone" : user.phone,
+                "image" : user.image,
+                "address" : user.address,
+                "provider_id" : item.id,
+                "description" : item.description,
+                "category" : item.category,
+                "jobs_done" : item.jobs_done,
+                "per_hour_wage" : item.per_hour_wage,
+                "recommendation" : item.recommendation,
+                "average_rating" : float(item.average_rating)
+            }
+
+            lst.append(diction)
+
+        if list:
+            return jsonify(results=lst)
+        abort(404, message="No providers in the database") 
+
+class TopCategoryProviders(Resource):
+    def get(self, category_id):
+        name = CategoryModel.query.filter_by(id=category_id).first().name
+        # capitalize
+        provs = ProviderModel.query.filter_by(category=name).order_by(ProviderModel.average_rating.desc()).limit(3).all()
+
+        lst = []
+        for item in provs:
+            user = UserModel.query.filter_by(id=item.user_id).first()
+            diction = {
+                "id" : user.id,
+                "firstname" : user.firstname,
+                "lastname" : user.lastname,
+                "email" : user.email,
+                "role" : user.role,
+                "phone" : user.phone,
+                "image" : user.image,
+                "address" : user.address,
+                "provider_id" : item.id,
+                "description" : item.description,
+                "category" : item.category,
+                "jobs_done" : item.jobs_done,
+                "per_hour_wage" : item.per_hour_wage,
+                "recommendation" : item.recommendation,
+                "average_rating" : float(item.average_rating)
+            }
+
+            lst.append(diction)
+
+        if list:
+            return jsonify(results=lst)
+        abort(404, message="No providers in the database")     
