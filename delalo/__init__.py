@@ -21,12 +21,18 @@ cors = CORS(app)
 
 
 from delalo.user_res import User,Users
-from delalo.order_res import Orders,Order,OrderStatus
+from delalo.order_res import Orders,Order,OrderStatus,Jobs,DeleteOrder
+from delalo.review_res import Reviews,Review
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
 api.add_resource(Orders, '/orders')
 api.add_resource(Order,'/orders/<int:id>')
 api.add_resource(OrderStatus,'/orderstatus/<int:id>')
+api.add_resource(DeleteOrder,'/deleteorder/<int:id>')
+api.add_resource(Jobs, '/jobs/<int:id>')
+api.add_resource(Reviews, '/reviews')
+api.add_resource(Review, '/reviews/<int:id>')
+
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
    
