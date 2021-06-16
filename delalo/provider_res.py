@@ -40,7 +40,13 @@ class Providers(Resource):
                                  user=user_prov)                 
         db.session.add(provider)
         db.session.commit()
-        return provider_user_schema.dump(data)
+
+        access_token = create_access_token(identity = {'role': user_prov.role, 'email': data['email']})
+        return {
+            'user': user_schema.dump(user_prov),
+            'message': 'User with email {} was created'.format(data['email']),
+            'access_token': access_token
+        }
 
     def get(self):
         provs = ProviderModel.query.all()           

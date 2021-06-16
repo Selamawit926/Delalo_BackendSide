@@ -27,9 +27,14 @@ class Users(Resource):
                          address=args['address'])
         db.session.add(user)
         db.session.commit()
-        return user_schema.dump(user), 201
+        access_token = create_access_token(identity = {'role': user.role, 'email': data['email']})
+        return {
+            'user': user_schema.dump(user),
+            'message': 'User with email {} was created'.format(data['email']),
+            'access_token': access_token
+        }
     
-    # @jwt_required()
+    @jwt_required()
     def get(self):
         result = UserModel.query.all()
         return user_schemas.dump(result)   

@@ -1,7 +1,3 @@
-from datetime import datetime
-from enum import unique
-
-from sqlalchemy.orm import joinedload, lazyload
 from delalo import db, bcrypt
 
 
@@ -98,7 +94,16 @@ class CategoryModel(db.Model):
     description = db.Column(db.Text, nullable=True)
 
 
-
+class RevokedTokenModel(db.Model):
+    __tablename__ = 'revoked_tokens'
+    id = db.Column(db.Integer, primary_key = True)
+    jti = db.Column(db.String(120))
+    
+    
+    @classmethod
+    def is_jti_blacklisted(self, jti):
+        query = self.query.filter_by(jti = jti).first()
+        return bool(query)
 
 
 
