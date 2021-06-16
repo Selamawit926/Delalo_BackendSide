@@ -29,7 +29,7 @@ class Users(Resource):
         db.session.commit()
         return user_schema.dump(user), 201
     
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         result = UserModel.query.all()
         return user_schemas.dump(result)   
@@ -37,7 +37,7 @@ class Users(Resource):
 
 
 class User(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self, id):
         result = UserModel.query.filter_by(id=id).first()
         if not result:
