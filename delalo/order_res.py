@@ -159,13 +159,11 @@ class Order(Resource):
         
            
         return jsonify(results=objs)
-        # return orderSchemas.dump(result)
 class Jobs(Resource):
     def get(self,id):
         results=OrderModel.query.filter_by(provider_id=id).all()
         if not results:
             abort(404, message="Jobs not found!")
-
         lst=results
         status = request.args.get('status') 
         completed = request.args.get('completed')
@@ -180,7 +178,7 @@ class Jobs(Resource):
             lst=list(lst)
 
         objs=[]
-        for result in results:
+        for result in lst:
             user=UserModel.query.filter_by(id=result.seeker_id).first()
             provider=ProviderModel.query.filter_by(id=result.provider_id).first()
             provider_user = UserModel.query.filter_by(id=provider.user_id).first()

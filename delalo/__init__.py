@@ -36,7 +36,7 @@ api.add_resource(User, '/users/<int:id>')
 api.add_resource(Orders, '/orders')
 api.add_resource(Order,'/userorders/<int:id>')
 api.add_resource(OrderStatus,'/orders/<int:id>')
-# api.add_resource(DeleteOrder,'/orders/<int:id>')
+api.add_resource(DeleteOrder,'/orders/<int:id>')
 api.add_resource(Jobs, '/jobs/<int:id>')
 
 api.add_resource(Reviews, '/reviews')
@@ -56,7 +56,8 @@ api.add_resource(TopCategoryProviders, '/providers/top/<int:category_id>')
 
 
 app.register_blueprint(api_bp, url_prefix='/delalo')
-   
+
+# from delalo.models import *   
 
 # @jwt.token_in_blocklist_loader
 # def check_if_token_in_blacklist(jwt_header, jwt_payload):
