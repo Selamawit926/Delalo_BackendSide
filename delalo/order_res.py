@@ -121,8 +121,24 @@ class Order(Resource):
         if not results:
             abort(404, message="Order not found!")
 
+        lst=results
+        status = request.args.get('status') 
+        completed = request.args.get('completed')
+        if  completed:
+            print("completed")
+            lst = (d for d in results if d.is_completed)
+            lst=list(lst)  
+        elif status:
+            print('status??')
+            if status.lower() == "accepted":
+                lst = (d for d in results if d.status.lower() == "accepted")
+            elif status.lower() == "pending": 
+                lst = (d for d in results if d.status.lower() == "pending" or d.status.lower() == "declined")   
+            lst=list(lst)
+          
+        print(len(lst))
         objs=[]
-        for result in results:
+        for result in lst:
             user=UserModel.query.filter_by(id=result.seeker_id).first()
             provider=ProviderModel.query.filter_by(id=result.provider_id).first()
             provider_user = UserModel.query.filter_by(id=provider.user_id).first()
