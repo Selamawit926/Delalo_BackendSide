@@ -206,6 +206,8 @@ class DeleteOrder(Resource):
         # db.session.remove(result)
         db.session.commit()
 
+        return {"category_id": result.id}
+
     # @jwt_required()
     # def patch(self, id):
     #     data = request.get_json()
