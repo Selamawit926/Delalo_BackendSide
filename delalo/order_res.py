@@ -119,16 +119,53 @@ class OrderStatus(Resource):
 
 class Order(Resource):
     def get(self,id):
-        result=OrderModel.query.filter_by(seeker_id=id).all()
-        if not result:
+        results=OrderModel.query.filter_by(seeker_id=id).all()
+        if not results:
             abort(404, message="Order not found!")
-        return orderSchemas.dump(result)
+
+        objs=[]
+        for result in results:
+            user=UserModel.query.filter_by(id=result.seeker_id).first()
+            provider=ProviderModel.query.filter_by(id=result.provider_id).first()
+            provider_user = UserModel.query.filter_by(id=provider.user_id).first()
+            review=ReviewModel.query.filter_by(order_id=result.id).first()
+
+            objs.append({
+                "user": user_schema.dump(user),
+                "provider" : {
+                    "user_info": user_schema.dump(provider_user),
+                    "provider_info": provider_schema.dump(provider)
+                },
+                "review" : review_schema.dump(review)
+            })
+        
+           
+        return jsonify(results=objs)
+        # return orderSchemas.dump(result)
 class Jobs(Resource):
     def get(self,id):
-        result=OrderModel.query.filter_by(provider_id=id).all()
-        if not result:
+        results=OrderModel.query.filter_by(provider_id=id).all()
+        if not results:
             abort(404, message="Jobs not found!")
-        return orderSchemas.dump(result)
+        objs=[]
+        for result in results:
+            user=UserModel.query.filter_by(id=result.seeker_id).first()
+            provider=ProviderModel.query.filter_by(id=result.provider_id).first()
+            provider_user = UserModel.query.filter_by(id=provider.user_id).first()
+            review=ReviewModel.query.filter_by(order_id=result.id).first()
+
+            objs.append({
+                "user": user_schema.dump(user),
+                "provider" : {
+                    "user_info": user_schema.dump(provider_user),
+                    "provider_info": provider_schema.dump(provider)
+                },
+                "review" : review_schema.dump(review)
+            })
+        
+           
+        return jsonify(results=objs)
+        # return orderSchemas.dump(result)
 class DeleteOrder(Resource):
     def delete(self,id):
         result=OrderModel.query.filter_by(id=id).first()
