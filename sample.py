@@ -269,5 +269,5 @@ import datetime
 # db.session.add(order3)
 # db.session.add(review1)
 
-db.session.commit()
+# db.session.commit()
 

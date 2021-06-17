@@ -97,15 +97,12 @@ class Order(Resource):
         if not result:
             abort(404, message="Order not found!")
         return orderSchemas.dump(result)
-
 class Jobs(Resource):
     def get(self,id):
         result=OrderModel.query.filter_by(provider_id=id).all()
         if not result:
             abort(404, message="Jobs not found!")
         return orderSchemas.dump(result)
-
-
 class DeleteOrder(Resource):
     def delete(self,id):
         result=OrderModel.query.filter_by(id=id).first()
@@ -115,7 +112,6 @@ class DeleteOrder(Resource):
         OrderModel.query.filter_by(id=id).delete()
         # db.session.remove(result)
         db.session.commit()
-
 
     # @jwt_required()
     # def patch(self, id):

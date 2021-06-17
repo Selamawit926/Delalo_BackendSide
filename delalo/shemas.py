@@ -98,3 +98,40 @@ class OrderSchema(ma.Schema):
     seeker_id = fields.Integer(required=True)
     provider_id = fields.Integer(required=True)
     final_payment=fields.Float(required=False)
+
+
+class ProviderUserSchema(ma.Schema):
+    class Meta:
+        fields = ("id", "firstname", "lastname", "email", "password_hash", "role", "phone", "image", "address","Provider_id", "description", "category", "jobs_done", "per_hour_wage", "recommendation", "average_rating")    
+        ordered = True
+    id = fields.Integer(dump_only=True)
+    firstname = fields.String(required=True)
+    lastname = fields.String(required=True)
+    email = fields.String(required=True)
+    password_hash = fields.String(load_only=True, data_key="password")
+    role = fields.String(required=False)
+    phone = fields.String(required=True)
+    image = fields.String(required=False)
+    address = fields.String(required=True)  
+    description = fields.String(required=True)
+    category = fields.String(required=True)
+    jobs_done = fields.Integer(required=True)  
+    per_hour_wage = fields.Integer(required=True)
+    recommendation = fields.String(required=True)
+    average_rating = fields.Float(required=True)
+    user_id = fields.Integer(dump_only=True)  
+    
+
+    @validates("email")
+    def validate_email(self, email):
+        rule_email = re.compile(r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$')
+
+        if not rule_email.search(email):
+            msg = u"Invalid email address."
+            raise ValidationError(msg)
+
+        if bool(UserModel.query.filter_by(email=email).first()):
+            raise ValidationError(
+                'username with email - "{email}" already exists, '
+                'please use a different email.'.format(email=email)
+            )
