@@ -30,6 +30,7 @@ class Providers(Resource):
                          image=args['image'],
                          address=args['address'])
 
+                         
         provider = ProviderModel(description=args['description'],
                                  category=args['category'],
                                  jobs_done=args['jobs_done'],

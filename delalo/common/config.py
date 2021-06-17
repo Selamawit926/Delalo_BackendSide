@@ -5,5 +5,4 @@ class Config:
     JWT_SECRET_KEY = '81f3d659737f288fe3f74f69d878a652'
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:12345678@localhost:5432/delalodb'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_BLACKLIST_TOKEN_CHECKS = ['access']
-    JWT_BLACKLIST_ENABLED = ['access']
+    JWT_BLACKLIST_ENABLED = True

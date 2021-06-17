@@ -1,4 +1,3 @@
-import jwt
 from delalo.common.config import Config
 from flask import Flask, Blueprint, json
 from flask_restful import Api
@@ -14,10 +13,11 @@ api_bp = Blueprint('api', __name__)
 app.config.from_object(Config)
 api = Api(api_bp)
 
-jwt = JWTManager(app)
+
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 cors = CORS()
 
 cors.init_app(app, allow_headers='*')
@@ -29,13 +29,14 @@ from delalo.review_res import *
 from delalo.provider_res import *
 from delalo.auth import *
 from delalo.category_res import *
+
 api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<int:id>') 
 
 api.add_resource(Orders, '/orders')
 api.add_resource(Order,'/userorders/<int:id>')
 api.add_resource(OrderStatus,'/orders/<int:id>')
-api.add_resource(DeleteOrder,'/orders/<int:id>')
+# api.add_resource(DeleteOrder,'/orders/<int:id>')
 api.add_resource(Jobs, '/jobs/<int:id>')
 
 api.add_resource(Reviews, '/reviews')
@@ -57,11 +58,10 @@ api.add_resource(TopCategoryProviders, '/providers/top/<int:category_id>')
 app.register_blueprint(api_bp, url_prefix='/delalo')
    
 
-
-@jwt.token_in_blocklist_loader
-def check_if_token_in_blacklist(jwt_header, jwt_payload):
-    jti = jwt_payload['jti']
-    return models.RevokedTokenModel.is_jti_blacklisted(jti)
+# @jwt.token_in_blocklist_loader
+# def check_if_token_in_blacklist(jwt_header, jwt_payload):
+#     jti = jwt_payload['jti']
+#     return RevokedTokenModel.is_jti_blacklisted(jti)
 
 
 

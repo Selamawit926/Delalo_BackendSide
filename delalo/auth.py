@@ -30,7 +30,6 @@ class UserLogout(Resource):
     @jwt_required()
     def post(self):
         jti = get_jwt()['jti']
-        print(jti)
         try:
             revoked_token = RevokedTokenModel(jti = jti)
             db.session.add(revoked_token)

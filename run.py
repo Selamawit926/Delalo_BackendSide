@@ -1,5 +1,4 @@
 from delalo import app, db
-from delalo.models import UserModel
 #uncomment the following line if the database doesn't exit
 # db.create_all()
 

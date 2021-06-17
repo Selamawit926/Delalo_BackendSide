@@ -2,13 +2,14 @@
 import datetime
 
 from flask.json import jsonify
+import jwt
 from delalo.user_res import User
 import random
 from typing_extensions import ParamSpecArgs
 from flask import request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
-from marshmallow.fields import DateTime
+from marshmallow.fields import DateTime, Email
 from delalo import db
 from delalo.models import *
 from delalo.shemas import *
@@ -23,8 +24,11 @@ provider_schema =ProviderSchema()
 review_schema = ReviewSchema()
 
 class Orders(Resource):
+    @jwt_required()
     def post(self):
-        seeker_id=request.args.get("seeker_id")
+        logged_user_email = get_jwt_identity()['email']
+        logged_user = UserModel.query.filter_by(email=logged_user_email).first()
+        seeker_id = logged_user.id
         provider_id=request.args.get("provider_id")
         order= OrderModel(status="pending",
                             is_completed=False,
@@ -74,19 +78,21 @@ class OrderStatus(Resource):
     #     starthour=0
     #     pausedhour=0
 
+    @jwt_required()
     def put(self,id):
         status= request.args.get("status")
         progress=request.args.get("progress")
         result=OrderModel.query.filter_by(id=id).first()
         # return orderSchema.dump(result)
         # return orderSchema.dump(result)
-        if status=="accepted":
-            result.status="active"
-            db.session.commit()
-
-        elif status=="declined":
-            result.status="declined"
-            db.session.commit()
+        if status:
+            if status=="accepted":
+                result.status="active"
+                db.session.commit()
+                
+            elif status=="declined":
+                result.status="declined"
+                db.session.commit()
 
         # return OrderModel.query.filter_by(id=id).first()
         if progress=="started":
@@ -125,18 +131,15 @@ class Order(Resource):
         status = request.args.get('status') 
         completed = request.args.get('completed')
         if  completed:
-            print("completed")
             lst = (d for d in results if d.is_completed)
             lst=list(lst)  
         elif status:
-            print('status??')
             if status.lower() == "accepted":
                 lst = (d for d in results if d.status.lower() == "accepted")
             elif status.lower() == "pending": 
                 lst = (d for d in results if d.status.lower() == "pending" or d.status.lower() == "declined")   
             lst=list(lst)
           
-        print(len(lst))
         objs=[]
         for result in lst:
             user=UserModel.query.filter_by(id=result.seeker_id).first()
@@ -162,6 +165,20 @@ class Jobs(Resource):
         results=OrderModel.query.filter_by(provider_id=id).all()
         if not results:
             abort(404, message="Jobs not found!")
+
+        lst=results
+        status = request.args.get('status') 
+        completed = request.args.get('completed')
+        if  completed:
+            lst = (d for d in results if d.is_completed)
+            lst=list(lst)  
+        elif status:
+            if status.lower() == "accepted":
+                lst = (d for d in results if d.status.lower() == "accepted")
+            elif status.lower() == "pending": 
+                lst = (d for d in results if d.status.lower() == "pending" or d.status.lower() == "declined")   
+            lst=list(lst)
+
         objs=[]
         for result in results:
             user=UserModel.query.filter_by(id=result.seeker_id).first()
@@ -181,7 +198,6 @@ class Jobs(Resource):
         
            
         return jsonify(results=objs)
-        # return orderSchemas.dump(result)
 class DeleteOrder(Resource):
     def delete(self,id):
         result=OrderModel.query.filter_by(id=id).first()
