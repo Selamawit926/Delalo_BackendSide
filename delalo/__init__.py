@@ -32,8 +32,8 @@ api.add_resource(User, '/users/<int:id>')
 
 api.add_resource(Orders, '/orders')
 api.add_resource(Order,'/orders/<int:id>')
-api.add_resource(OrderStatus,'/orderstatus/<int:id>')
-api.add_resource(DeleteOrder,'/deleteorder/<int:id>')
+api.add_resource(OrderStatus,'/orders/<int:id>')
+api.add_resource(DeleteOrder,'/orders/<int:id>')
 api.add_resource(Jobs, '/jobs/<int:id>')
 
 api.add_resource(Reviews, '/reviews')

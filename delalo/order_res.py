@@ -1,5 +1,8 @@
 
 import datetime
+
+from flask.json import jsonify
+from delalo.user_res import User
 import random
 from typing_extensions import ParamSpecArgs
 from flask import request
@@ -7,14 +10,17 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from marshmallow.fields import DateTime
 from delalo import db
-from delalo.models import OrderModel, UserModel,ProviderModel
-from delalo.shemas import OrderSchema, UserSchema
+from delalo.models import *
+from delalo.shemas import *
 from flask_jwt_extended import ( create_access_token, get_jwt,
                             jwt_required, get_jwt_identity)
 
 
 orderSchema= OrderSchema()
 orderSchemas=OrderSchema(many=True)
+user_schema= UserSchema()
+provider_schema =ProviderSchema() 
+review_schema = ReviewSchema()
 
 class Orders(Resource):
     def post(self):
@@ -37,8 +43,28 @@ class Orders(Resource):
         return orderSchema.dump(order), 201
 
     def get(self):
-        result= OrderModel.query.all()
-        return orderSchemas.dump(result)
+        results= OrderModel.query.all()
+        objs=[]
+        for result in results:
+            
+            user=UserModel.query.filter_by(id=result.seeker_id).first()
+            provider=ProviderModel.query.filter_by(id=result.provider_id).first()
+            provider_user = UserModel.query.filter_by(id=provider.user_id).first()
+            review=ReviewModel.query.filter_by(order_id=result.id).first()
+
+
+
+            objs.append({
+                "user": user_schema.dump(user),
+                "provider" : {
+                    "user_info": user_schema.dump(provider_user),
+                    "provider_info": provider_schema.dump(provider)
+                },
+                "review" : review_schema.dump(review)
+            })
+        
+           
+        return jsonify(results=objs)
 
 
 
