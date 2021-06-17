@@ -51,16 +51,14 @@ class Orders(Resource):
             provider=ProviderModel.query.filter_by(id=result.provider_id).first()
             provider_user = UserModel.query.filter_by(id=provider.user_id).first()
             review=ReviewModel.query.filter_by(order_id=result.id).first()
-
-
-
             objs.append({
                 "user": user_schema.dump(user),
                 "provider" : {
                     "user_info": user_schema.dump(provider_user),
                     "provider_info": provider_schema.dump(provider)
                 },
-                "review" : review_schema.dump(review)
+                "review" : review_schema.dump(review),
+                "order": orderSchema.dump(result)
             })
         
            
@@ -136,7 +134,8 @@ class Order(Resource):
                     "user_info": user_schema.dump(provider_user),
                     "provider_info": provider_schema.dump(provider)
                 },
-                "review" : review_schema.dump(review)
+                "review" : review_schema.dump(review),
+                "order": orderSchema.dump(result)
             })
         
            
@@ -160,7 +159,8 @@ class Jobs(Resource):
                     "user_info": user_schema.dump(provider_user),
                     "provider_info": provider_schema.dump(provider)
                 },
-                "review" : review_schema.dump(review)
+                "review" : review_schema.dump(review),
+                "order": orderSchema.dump(result)
             })
         
            
